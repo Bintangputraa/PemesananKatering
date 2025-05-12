@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\MenuController;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,6 @@ Route::middleware('auth:api')->group(function () {
 Route::get('/transaction', [OrderController::class, 'index']);
 Route::post('transaction/status', [OrderController::class, 'status']);
 
-Route::get('/user', function(){
-    return view('user');
-});
+Route::get('/user', [UserController::class, 'index']);
+
+Route::get('/menu', [MenuController::class, 'index']);

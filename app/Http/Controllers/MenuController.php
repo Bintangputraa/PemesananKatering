@@ -13,7 +13,8 @@ class MenuController extends Controller
     // Menampilkan semua data menu
     public function index()
     {
-        return response()->json(Menu::all(), 200);
+        $menus = menu::all();
+        return view('menu', compact('menus'));
     }
 
 
@@ -52,7 +53,7 @@ class MenuController extends Controller
     $menu->recomend = $request->input('recomend');
     $menu->harga = $request->input('harga');
 
-    $baseUrl = 'https://80bf-182-2-53-148.ngrok-free.app'; // Gunakan base URL yang diinginkan
+    $baseUrl = 'https://65f4-2407-0-3006-4461-1026-77e5-6491-f4d8.ngrok-free.app'; // Gunakan base URL yang diinginkan
 
     // Gabungkan base URL dengan setiap path gambar
     foreach ($gambarPaths as &$gambarPath) {
@@ -71,6 +72,38 @@ class MenuController extends Controller
         'menu' => $menu
     ], 201);
 }
+
+// Mengupdate menu
+public function update(Request $request, $id)
+{
+    $menu = Menu::find($id);
+    if (!$menu) {
+        return response()->json(['message' => 'Menu not found'], 404);
+    }
+
+    // Validasi hanya jika gambar diupload
+    if ($request->hasFile('gambar')) {
+        $validatedData = $request->validate([
+            'gambar.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $gambarPaths = [];
+        foreach ($request->file('gambar') as $gambar) {
+            $path = $gambar->store('uploads', 'public');
+            // Gunakan URL ngrok atau domain Anda
+            $gambarPaths[] = 'https://65f4-2407-0-3006-4461-1026-77e5-6491-f4d8.ngrok-free.app/storage/' . $path;
+        }
+
+        // Simpan gambar sebagai JSON string
+        $menu->gambar = json_encode($gambarPaths);
+    }
+
+
+    $menu->save();
+
+    return response()->json($menu, 200);
+}
+
 
 
 
@@ -127,40 +160,6 @@ class MenuController extends Controller
             'menus' => $menus
         ], 200);
     }
-
-
-
-
-    // Mengupdate menu
-    public function update(Request $request, $id)
-    {
-        $menu = Menu::find($id);
-        if ($menu) {
-            // Validasi data yang diterima
-            $validatedData = $request->validate([
-                'nama_menu' => 'sometimes|required|string|max:255',
-                'deskripsi' => 'sometimes|required|string',
-                'gambar' => 'sometimes|required|string', // Pastikan ini adalah URL gambar atau path relatif
-                'kategori' => 'sometimes|required|string',
-                'harga' => 'sometimes|required|numeric',
-            ]);
-
-            // Mengupdate data menu
-            $menu->update($validatedData);
-
-            // Mengubah gambar menjadi URL lengkap
-            if ($request->has('gambar')) {
-                $menu->gambar = url($request->gambar); // Menggunakan fungsi url() untuk menghasilkan URL lengkap
-            }
-
-            return response()->json($menu, 200);
-        } else {
-            return response()->json(['message' => 'Menu not found'], 404);
-        }
-    }
-
-
-
     
 
     // Menghapus menu

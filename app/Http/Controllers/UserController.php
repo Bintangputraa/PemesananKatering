@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+
+    public function index()
+    {
+        $users = user::all();
+        return view('user', compact('users'));
+    }
+
     public function show(Request $request)
     {
         $email = $request->input('email'); // Mengambil email dari request

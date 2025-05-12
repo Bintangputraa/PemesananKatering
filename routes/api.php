@@ -21,7 +21,7 @@ Route::get('/menus', [MenuController::class, 'index']);
 Route::get('/menus/{kategori}', [MenuController::class, 'menuSnack']);
 Route::post('/menus', [MenuController::class, 'store']);
 Route::get('/menus/{id}', [MenuController::class, 'show']);
-Route::put('/menus/{id}', [MenuController::class, 'update']);
+Route::post('/menus/{id}', [MenuController::class, 'update']);
 Route::delete('/menus/{id}', [MenuController::class, 'destroy']);
 
 Route::get('/menu/kategori/{kategori}', [MenuController::class, 'getBykategori']);

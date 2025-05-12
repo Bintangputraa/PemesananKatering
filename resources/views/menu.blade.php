@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=, initial-scale=1.0">
-    <title>User List</title>
+    <title>Menu List</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1 class="text-center flex-grow-1">User List</h1>
+            <h1 class="text-center flex-grow-1">Menu List</h1>
             <a href="" class="btn btn-primary ms-3">Add</a>
         </div>
         <div class="table-responsive">
@@ -17,27 +17,23 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Password</th>
-                        <th>No Telfon</th>
-                        <th>Alamat</th>
-                        <th>Created at</th>
-                        <th>Updated at</th>
+                        <th>Nama Menu</th>
+                        <th>Deskripsi</th>
+                        <th>Kategori</th>
+                        <th>Recomended</th>
+                        <th>Harga</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($users as $user)
+                    @foreach($menus as $menu)
                     <tr>
-                        <td>{{ $user->id }}</td>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->password }}</td>
-                        <td>{{ $user->no_telf }}</td>
-                        <td>{{ $user->alamat }}</td>
-                        <td>{{ $user->created_at }}</td>
-                        <td>{{ $user->updated_at }}</td>
+                        <td>{{ $menu->id }}</td>
+                        <td>{{ $menu->nama_menu }}</td>
+                        <td>{{ $menu->deskripsi }}</td>
+                        <td>{{ $menu->kategori }}</td>
+                        <td>{{ $menu->recomend }}</td>
+                        <td>{{ number_format($menu->harga, 0, ',', '.') }}</td>
                         <td>
                             <a href="" class="btn btn-sm btn-warning">Edit</a>
                             <form action="" method="POST" style="display:inline;">

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Transaksi</title>
-    <!-- Bootstrap CSS (Optional, untuk styling) -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -24,6 +24,7 @@
                         <th>Tanggal Pemesanan</th>
                         <th>Jam</th>
                         <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -39,6 +40,15 @@
                         <td>{{ $order->tanggal_pemesanan }}</td>
                         <td>{{ $order->jam }}</td>
                         <td>{{ ucfirst($order->status) }}</td>
+                        <td>
+                            <a href="" class="btn btn-sm btn-warning mb-1">Edit</a>
+                            <form action="" method="POST" style="display:inline;">
+                                @csrf
+                                @method('PATCH')
+                                <button class="btn btn-sm btn-danger mb-1" onclick="return confirm('Batalkan pesanan ini?')">Batalkan</button>
+                            </form>
+                            <a href="https://wa.me/{{ $order->user->no_telf ?? '08xxxxxxxxxx' }}" target="_blank" class="btn btn-sm btn-success">Hubungi</a>
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -46,7 +56,7 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS (Optional, untuk interaktivitas) -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
