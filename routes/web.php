@@ -25,3 +25,8 @@ Route::post('transaction/status', [OrderController::class, 'status']);
 Route::get('/user', [UserController::class, 'index']);
 
 Route::get('/menu', [MenuController::class, 'index']);
+
+Route::get('/create-storage-link', function () {
+    Artisan::call('storage:link');
+    return 'Storage link created!';
+});
