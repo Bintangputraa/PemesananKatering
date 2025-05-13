@@ -2,7 +2,10 @@
 /node_modules
 /public/build
 /public/hot
-/storage/*.key
+/storage/*
+!/storage/app/public/
+/storage/app/public/*
+!/storage/app/public/uploads/
 /storage/pail
 /vendor
 .env
