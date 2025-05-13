@@ -53,7 +53,7 @@ class MenuController extends Controller
     $menu->recomend = $request->input('recomend');
     $menu->harga = $request->input('harga');
 
-    $baseUrl = 'https://65f4-2407-0-3006-4461-1026-77e5-6491-f4d8.ngrok-free.app'; // Gunakan base URL yang diinginkan
+    $baseUrl = 'https://pemesanankatering-production.up.railway.app'; // Gunakan base URL yang diinginkan
 
     // Gabungkan base URL dengan setiap path gambar
     foreach ($gambarPaths as &$gambarPath) {
@@ -91,7 +91,7 @@ public function update(Request $request, $id)
         foreach ($request->file('gambar') as $gambar) {
             $path = $gambar->store('uploads', 'public');
             // Gunakan URL ngrok atau domain Anda
-            $gambarPaths[] = 'https://65f4-2407-0-3006-4461-1026-77e5-6491-f4d8.ngrok-free.app/storage/' . $path;
+            $gambarPaths[] = 'https://pemesanankatering-production.up.railway.app/storage/' . $path;
         }
 
         // Simpan gambar sebagai JSON string
