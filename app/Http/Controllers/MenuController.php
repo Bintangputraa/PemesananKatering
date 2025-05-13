@@ -13,7 +13,7 @@ class MenuController extends Controller
     // Menampilkan semua data menu
     public function index()
     {
-        $menus = Menu::all();
+        $menus = menu::all();
         return view('menu', compact('menus'));
     }
 
