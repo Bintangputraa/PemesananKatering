@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use Cloudinary\Api\Upload\UploadApi;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Facades\Storage;
 
 class MenuController extends Controller
@@ -20,61 +22,103 @@ class MenuController extends Controller
 
 
     // Menyimpan menu baru
+    //     public function store(Request $request)
+    // {
+    //     // Validasi input
+    //     $request->validate([
+    //         'nama_menu' => 'required|string|max:255',
+    //         'deskripsi' => 'required|string',
+    //         'kategori' => 'required|string',
+    //         'harga' => 'required|numeric',
+    //         'gambar' => 'required|array', // Pastikan gambar adalah array
+    //         'gambar.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048' // Validasi setiap file gambar
+    //     ]);
+
+    //     // Mengambil semua gambar yang diunggah
+    //     $gambarPaths = [];
+
+    //     if ($request->hasFile('gambar')) {
+    //         foreach ($request->file('gambar') as $gambar) {
+    //             // Menyimpan gambar dan mendapatkan path
+    //             $path = $gambar->store('uploads', 'public');
+    //             // Tambahkan URL base menggunakan asset()
+    //             $fullPath = asset('storage/' . $path); // Menambahkan storage path agar bisa diakses
+    //             $gambarPaths[] = $fullPath;
+    //         }
+    //     }
+
+    //     // Buat instance Menu baru
+    //     $menu = new Menu();
+    //     $menu->nama_menu = $request->input('nama_menu');
+    //     $menu->deskripsi = $request->input('deskripsi');
+    //     $menu->kategori = $request->input('kategori');
+    //     $menu->recomend = $request->input('recomend');
+    //     $menu->harga = $request->input('harga');
+
+    //     $baseUrl = 'https://pemesanankatering-production.up.railway.app'; // Gunakan base URL yang diinginkan
+
+    //     // Gabungkan base URL dengan setiap path gambar
+    //     foreach ($gambarPaths as &$gambarPath) {
+    //         $gambarPath = $baseUrl . '/storage/uploads/' . basename($gambarPath);
+    //     }
+
+    //     // Menyimpan array gambar sebagai JSON
+    //     $menu->gambar = json_encode($gambarPaths);
+
+    //     // Menyimpan data ke database
+    //     $menu->save();
+
+    //     // Mengembalikan respons sukses
+    //     return response()->json([
+    //         'message' => 'Menu berhasil ditambahkan!',
+    //         'menu' => $menu
+    //     ], 201);
+    // }
+
     public function store(Request $request)
-{
-    // Validasi input
-    $request->validate([
-        'nama_menu' => 'required|string|max:255',
-        'deskripsi' => 'required|string',
-        'kategori' => 'required|string',
-        'harga' => 'required|numeric',
-        'gambar' => 'required|array', // Pastikan gambar adalah array
-        'gambar.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048' // Validasi setiap file gambar
-    ]);
+    {
+        $request->validate([
+            'nama_menu' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'kategori' => 'required|string',
+            'harga' => 'required|numeric',
+            'gambar' => 'required|array',
+            'gambar.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
 
-    // Mengambil semua gambar yang diunggah
-    $gambarPaths = [];
+        $gambarUrls = [];
 
-    if ($request->hasFile('gambar')) {
-        foreach ($request->file('gambar') as $gambar) {
-            // Menyimpan gambar dan mendapatkan path
-            $path = $gambar->store('uploads', 'public');
-            // Tambahkan URL base menggunakan asset()
-            $fullPath = asset('storage/' . $path); // Menambahkan storage path agar bisa diakses
-            $gambarPaths[] = $fullPath;
+        // Upload semua gambar ke Cloudinary
+        if ($request->hasFile('gambar')) {
+            foreach ($request->file('gambar') as $gambar) {
+                $uploadResult = (new UploadApi())->upload($gambar->getRealPath(), [
+                    'folder' => 'katering_menu'
+                ]);
+
+                $gambarUrls[] = $uploadResult['secure_url'];
+            }
         }
+
+        $menu = new Menu();
+        $menu->nama_menu = $request->input('nama_menu');
+        $menu->deskripsi = $request->input('deskripsi');
+        $menu->kategori = $request->input('kategori');
+        $menu->recomend = $request->input('recomend');
+        $menu->harga = $request->input('harga');
+        $menu->gambar = json_encode($gambarUrls); // Simpan sebagai array JSON
+
+        $menu->save();
+
+        return response()->json([
+            'message' => 'Menu berhasil ditambahkan!',
+            'menu' => $menu
+        ], 201);
     }
 
-    // Buat instance Menu baru
-    $menu = new Menu();
-    $menu->nama_menu = $request->input('nama_menu');
-    $menu->deskripsi = $request->input('deskripsi');
-    $menu->kategori = $request->input('kategori');
-    $menu->recomend = $request->input('recomend');
-    $menu->harga = $request->input('harga');
 
-    $baseUrl = 'https://pemesanankatering-production.up.railway.app'; // Gunakan base URL yang diinginkan
 
-    // Gabungkan base URL dengan setiap path gambar
-    foreach ($gambarPaths as &$gambarPath) {
-        $gambarPath = $baseUrl . '/storage/uploads/' . basename($gambarPath);
-    }
-
-    // Menyimpan array gambar sebagai JSON
-    $menu->gambar = json_encode($gambarPaths);
-
-    // Menyimpan data ke database
-    $menu->save();
-
-    // Mengembalikan respons sukses
-    return response()->json([
-        'message' => 'Menu berhasil ditambahkan!',
-        'menu' => $menu
-    ], 201);
-}
-
-// Mengupdate menu
-public function update(Request $request, $id)
+    // Mengupdate menu
+    public function update(Request $request, $id)
 {
     $menu = Menu::find($id);
     if (!$menu) {
