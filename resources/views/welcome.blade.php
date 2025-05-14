@@ -94,8 +94,13 @@
 </head>
 <body>
     <div class="login-container">
+<<<<<<< HEAD
       <h1>Katering Bu Titin</h1>
       <h2>Login</h2>
+=======
+      <img src="image.png" alt="Logo Catering Bu Titin">
+      <h2>Login ke Catering Bu Titin</h2>
+>>>>>>> e11b7ad3054c2a072c7f469d4e0f193204433f9a
       <form id="loginForm">
         <div class="form-group">
           <label for="email">Email:</label>
@@ -120,7 +125,11 @@
         const message = document.getElementById('message');
   
         try {
+<<<<<<< HEAD
           const response = await fetch('/api/login', {
+=======
+          const response = await fetch('https://pemesanankatering-production.up.railway.app/api/login', {
+>>>>>>> e11b7ad3054c2a072c7f469d4e0f193204433f9a
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -138,7 +147,11 @@
   
             // Simpan token JWT ke localStorage atau lakukan redirect
             localStorage.setItem('token', result.token);
+<<<<<<< HEAD
             window.location.href = '/transaction';
+=======
+            window.location.href = 'https://pemesanankatering-production.up.railway.app/transaction';
+>>>>>>> e11b7ad3054c2a072c7f469d4e0f193204433f9a
           } else {
             // Login gagal
             message.style.color = 'red';
