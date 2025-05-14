@@ -109,34 +109,45 @@
           <p id="message" style="margin-top: 10px; color: red;"></p>
         </form>
       </div>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', async function(e) {
+          e.preventDefault();
     
-        <script>
-          document.getElementById("loginForm").addEventListener("submit", async function (e) {
-            e.preventDefault();
-        
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-        
-            const response = await fetch("/login", {
-              method: "POST",
+          const email = document.getElementById('email').value;
+          const password = document.getElementById('password').value;
+          const message = document.getElementById('message');
+    
+          try {
+            const response = await fetch('/api/login', {
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
               },
               body: JSON.stringify({ email, password })
             });
-        
-            const data = await response.json();
-        
-            if (response.ok) {
-              alert("Login berhasil! Token: " + data.token);
-              // Simpan token di localStorage atau sessionStorage
-              localStorage.setItem("token", data.token);
-            } else {
-              alert("Login gagal: " + data.error);
-            }
-          });
-        </script>
     
+            const result = await response.json();
+    
+            if (response.ok) {
+              // Login berhasil
+              message.style.color = 'green';
+              message.textContent = 'Login berhasil!';
+    
+              // Simpan token JWT ke localStorage atau lakukan redirect
+              localStorage.setItem('token', result.token);
+              window.location.href = '/transaction';
+            } else {
+              // Login gagal
+              message.style.color = 'red';
+              message.textContent = result.error || 'Login gagal.';
+            }
+          } catch (err) {
+            message.style.color = 'red';
+            message.textContent = 'Terjadi kesalahan. Coba lagi.';
+          }
+        });
+      </script>
     </body>
   </html>
