@@ -16,17 +16,12 @@ Route::post('/daftar', [UserController::class, 'add']);
 Route::post('/registrasi', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
+    Route::get('/transaction', [OrderController::class, 'index']);
+    Route::post('transaction/status', [OrderController::class, 'status']);
+
+    Route::get('/user', [UserController::class, 'index']);
+
+    Route::get('/menu', [MenuController::class, 'index']);
+
     Route::post('/logout', [AuthController::class, 'logout']);
-});
-
-Route::get('/transaction', [OrderController::class, 'index']);
-Route::post('transaction/status', [OrderController::class, 'status']);
-
-Route::get('/user', [UserController::class, 'index']);
-
-Route::get('/menu', [MenuController::class, 'index']);
-
-Route::get('/create-storage-link', function () {
-    Artisan::call('storage:link');
-    return 'Storage link created!';
 });
