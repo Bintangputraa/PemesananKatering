@@ -110,44 +110,50 @@
         </form>
       </div>
     <script>
-        const loginForm = document.getElementById('loginForm');
-        loginForm.addEventListener('submit', async function(e) {
-          e.preventDefault();
-    
-          const email = document.getElementById('email').value;
-          const password = document.getElementById('password').value;
-          const message = document.getElementById('message');
-    
-          try {
-            const response = await fetch('/api/login', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-              },
-              body: JSON.stringify({ email, password })
-            });
-    
-            const result = await response.json();
-    
-            if (response.ok) {
-              // Login berhasil
-              message.style.color = 'green';
-              message.textContent = 'Login berhasil!';
-    
-              // Simpan token JWT ke localStorage atau lakukan redirect
-              localStorage.setItem('token', result.token);
-              window.location.href = '/transaction';
-            } else {
-              // Login gagal
-              message.style.color = 'red';
-              message.textContent = result.error || 'Login gagal.';
-            }
-          } catch (err) {
-            message.style.color = 'red';
-            message.textContent = 'Terjadi kesalahan. Coba lagi.';
+  document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+      // Kirim request login
+      const loginResponse = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const loginData = await loginResponse.json();
+
+      if (loginResponse.ok) {
+        const token = loginData.token;
+
+        // ✅ Sekarang kita pakai token untuk akses endpoint lain (contoh: /user)
+        const userResponse = await fetch('/user', {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Accept': 'application/json'
           }
         });
-      </script>
+
+        const userData = await userResponse.json();
+        console.log('User Data:', userData);
+
+      } else {
+        alert(loginData.error || 'Login gagal');
+      }
+
+    } catch (err) {
+      console.error('Error:', err);
+      alert('Terjadi kesalahan saat login.');
+    }
+  });
+</script>
+
     </body>
   </html>
