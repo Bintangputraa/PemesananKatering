@@ -110,45 +110,33 @@
         </form>
       </div>
     
-      <script>
-        const loginForm = document.getElementById('loginForm');
-        loginForm.addEventListener('submit', async function(e) {
-          e.preventDefault();
-    
-          const email = document.getElementById('email').value;
-          const password = document.getElementById('password').value;
-          const message = document.getElementById('message');
-    
-          try {
-            const response = await fetch('/api/login', {
-              method: 'POST',
+        <script>
+          document.getElementById("loginForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+        
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+        
+            const response = await fetch("/login", {
+              method: "POST",
               headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
+                "Content-Type": "application/json",
+                "Accept": "application/json"
               },
               body: JSON.stringify({ email, password })
             });
-    
-            const result = await response.json();
-    
+        
+            const data = await response.json();
+        
             if (response.ok) {
-              // Login berhasil
-              message.style.color = 'green';
-              message.textContent = 'Login berhasil!';
-    
-              // Simpan token JWT ke localStorage atau lakukan redirect
-              localStorage.setItem('token', result.token);
-              window.location.href = '/transaction';
+              alert("Login berhasil! Token: " + data.token);
+              // Simpan token di localStorage atau sessionStorage
+              localStorage.setItem("token", data.token);
             } else {
-              // Login gagal
-              message.style.color = 'red';
-              message.textContent = result.error || 'Login gagal.';
+              alert("Login gagal: " + data.error);
             }
-          } catch (err) {
-            message.style.color = 'red';
-            message.textContent = 'Terjadi kesalahan. Coba lagi.';
-          }
-        });
-      </script>
+          });
+        </script>
+    
     </body>
   </html>
