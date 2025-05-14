@@ -109,51 +109,40 @@
           <p id="message" style="margin-top: 10px; color: red;"></p>
         </form>
       </div>
-    <script>
-  document.getElementById('loginForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    try {
-      // Kirim request login
-      const loginResponse = await fetch('/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
-
-      const loginData = await loginResponse.json();
-
-      if (loginResponse.ok) {
-        const token = loginData.token;
-
-        // ✅ Sekarang kita pakai token untuk akses endpoint lain (contoh: /user)
-        const userResponse = await fetch('/user', {
-          method: 'GET',
-          headers: {
-            'Authorization': 'Bearer ' + token,
-            'Accept': 'application/json'
+    
+      <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+          const token = localStorage.getItem('token');
+      
+          if (!token) {
+            alert('Anda harus login terlebih dahulu.');
+            window.location.href = '/'; // Redirect ke login
+            return;
+          }
+      
+          try {
+            const response = await fetch('/api/transaction', {
+              headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+              }
+            });
+      
+            const data = await response.json();
+      
+            if (!response.ok) {
+              throw new Error(data.message || 'Gagal mengambil data.');
+            }
+      
+            console.log('Data transaksi:', data);
+            // Tampilkan data ke halaman jika perlu
+      
+          } catch (err) {
+            alert('Token tidak valid atau kadaluarsa. Silakan login ulang.');
+            localStorage.removeItem('token');
+            window.location.href = '/';
           }
         });
-
-        const userData = await userResponse.json();
-        console.log('User Data:', userData);
-
-      } else {
-        alert(loginData.error || 'Login gagal');
-      }
-
-    } catch (err) {
-      console.error('Error:', err);
-      alert('Terjadi kesalahan saat login.');
-    }
-  });
-</script>
-
+      </script>      
     </body>
   </html>
